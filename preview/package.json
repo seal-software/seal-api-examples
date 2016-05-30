@@ -1,0 +1,22 @@
+{
+  "name": "seal-api-examples-preview",
+  "version": "1.0.0",
+  "description": "Code sample of how to consume the preview Seal API",
+  "dependencies": {
+    "http-server": "^0.9.0",
+    "litpro": "^0.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "litpro -b . README.md",
+    "start": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seal-software/seal-api-examples.git"
+  },
+  "author": "Christopher Fredén",
+  "license": "ISC",
+  "private": true
+}

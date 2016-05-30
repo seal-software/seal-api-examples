@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      annotation {
+        border-top: 1px dotted;
+        border-bottom: 1px dotted;
+        box-sizing: border-box;
+      }
+      .highlight {
+        background-color: lightyellow;
+        border-top-style: solid;
+        border-bottom-style: solid;
+      }
+      .standard {
+        background-color: lightblue;
+      }
+      .non-standard {
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <preview id="preview"></preview>
+    <script src="./src/lib.js"></script>
+    <script src="./src/settings.js"></script>
+    <script>
+      (function() {
+        var apiUrl = demoSettings.host + "/seal-ws/v5",
+            contractId = demoSettings.contractId;
+        demoLib.login({
+          url: apiUrl,
+          user: demoSettings.username,
+          pass: demoSettings.password,
+        }, function(err, token) {
+          if (err != null) return console.error(err);
+          demoLib(apiUrl, token).getAll(contractId, function(err, data) {
+            if (err != null) return console.error(err);
+            init(data.html, data.metadata);
+          });
+        });
+        function init(html, metadata) {
+          function type(x) {
+            return ({
+              'standard': 'standard',
+              'non-standard': 'non-standard',
+            })[x.toLowerCase()];
+          }
+          function mouseOver(e) {
+            e.stopPropagation();
+            [].forEach.call(document.querySelectorAll('#'+e.target.id), function(el) {
+              el.classList.add('highlight');
+            });
+          }
+          function mouseOut(e) {
+            [].forEach.call(document.querySelectorAll('#'+e.target.id), function(el) {
+              el.classList.remove('highlight');
+            });
+          }
+          function registerHover(el) {
+            el.onmouseover = mouseOver;
+            el.onmouseout = mouseOut;
+          }
+          var previewEl = document.getElementById("preview");
+          previewEl.innerHTML = html;
+          demoLib.toList(metadata)
+          .filter(function(x) {
+            return x.attributes.scaType != null;
+          })
+          .forEach(function(x) {
+            [].forEach.call(document.querySelectorAll('#'+x.id), function(el) {
+              el.classList.add(type(x.attributes.scaType));
+            });
+          });
+          Object.keys(metadata).forEach(function(id) {
+            [].forEach.call(document.querySelectorAll('#'+id), registerHover);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
